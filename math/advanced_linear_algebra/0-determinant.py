@@ -5,11 +5,11 @@
 def determinant(matrix):
     """
     Calculates the determinant of a matrix.
-    
+
     Args:
         matrix: list of lists whose determinant should be calculated.
-        
-    Returns: 
+
+    Returns:
         The determinant of the matrix.
     """
     if not isinstance(matrix, list) or len(matrix) == 0:
