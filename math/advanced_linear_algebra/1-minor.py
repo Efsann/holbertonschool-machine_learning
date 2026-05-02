@@ -27,11 +27,11 @@ def minor(matrix):
     Returns:
         The minor matrix.
     """
-    if not isinstance(matrix, list) or len(matrix) == 0:
+    if type(matrix) is not list or len(matrix) == 0:
         raise TypeError("matrix must be a list of lists")
 
     for row in matrix:
-        if not isinstance(row, list):
+        if type(row) is not list:
             raise TypeError("matrix must be a list of lists")
 
     if matrix == [[]]:
@@ -49,8 +49,8 @@ def minor(matrix):
     for i in range(n):
         minor_row = []
         for j in range(n):
-            sub_matrix = [r[:j] + r[j+1:] for k, r in enumerate(matrix) if k != i]
-            minor_row.append(determinant(sub_matrix))
+            sub = [r[:j] + r[j+1:] for k, r in enumerate(matrix) if k != i]
+            minor_row.append(determinant(sub))
         minor_matrix.append(minor_row)
 
     return minor_matrix
