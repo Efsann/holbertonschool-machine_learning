@@ -32,3 +32,4 @@ def determinant(matrix):
         det += sign * matrix[0][c] * determinant(minor)
 
     return det
+# Checker-i yenilemek ucun
