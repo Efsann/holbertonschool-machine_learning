@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""Module to calculate the determinant of a matrix"""
+"""Module to calculate the determinant of a matrix."""
 
 
 def determinant(matrix):
     """
-    Calculates the determinant of a matrix
+    Calculates the determinant of a matrix.
+    
     Args:
-        matrix: list of lists whose determinant should be calculated
-    Returns: the determinant of matrix
+        matrix: list of lists whose determinant should be calculated.
+        
+    Returns: 
+        The determinant of the matrix.
     """
     if not isinstance(matrix, list) or len(matrix) == 0:
         raise TypeError("matrix must be a list of lists")
