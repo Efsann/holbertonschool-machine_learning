@@ -28,18 +28,23 @@ def likelihood(x, n, P):
     if np.any((P < 0) | (P > 1)):
         raise ValueError("All values in P must be in the range [0, 1]")
 
-    # Kombinezonun C(n, x) hesablanması üçün faktorialdan istifadə edirik
-    import math
+    # math modulu istifadə etmədən faktorialları hesablayırıq
+    fact_n = 1
+    for i in range(1, n + 1):
+        fact_n *= i
 
-    factorial_n = math.factorial(n)
-    factorial_x = math.factorial(x)
-    factorial_nx = math.factorial(n - x)
+    fact_x = 1
+    for i in range(1, x + 1):
+        fact_x *= i
+
+    fact_nx = 1
+    for i in range(1, (n - x) + 1):
+        fact_nx *= i
 
     # Kombinezon
-    comb = factorial_n / (factorial_x * factorial_nx)
+    comb = fact_n / (fact_x * fact_nx)
 
-    # Likelihood düsturu: C(n, x) * (p^x) * ((1-p)^(n-x))
-    # P bir numpy massivi olduğu üçün əməliyyat bütün elementlərə tətbiq olunur
+    # Likelihood düsturu
     likelihood_values = comb * (P ** x) * ((1 - P) ** (n - x))
 
     return likelihood_values
