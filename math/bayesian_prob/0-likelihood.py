@@ -11,7 +11,7 @@ def likelihood(x, n, P):
     Args:
         x: the number of patients that develop severe side effects
         n: the total number of patients observed
-        P: a 1D numpy.ndarray containing the various hypothetical probabilities
+        P: a 1D numpy.ndarray containing the various probabilities
 
     Returns:
         A 1D numpy.ndarray containing the likelihood of obtaining the data,
@@ -20,7 +20,9 @@ def likelihood(x, n, P):
     if not isinstance(n, int) or n <= 0:
         raise ValueError("n must be a positive integer")
     if not isinstance(x, int) or x < 0:
-        raise ValueError("x must be an integer that is greater than or equal to 0")
+        # Sətir uzunluğunu (79 simvol) keçməmək üçün iki yerə böldük
+        raise ValueError(
+            "x must be an integer that is greater than or equal to 0")
     if x > n:
         raise ValueError("x cannot be greater than n")
     if not isinstance(P, np.ndarray) or P.ndim != 1:
@@ -28,7 +30,6 @@ def likelihood(x, n, P):
     if np.any((P < 0) | (P > 1)):
         raise ValueError("All values in P must be in the range [0, 1]")
 
-    # math modulu istifadə etmədən faktorialları hesablayırıq
     fact_n = 1
     for i in range(1, n + 1):
         fact_n *= i
@@ -41,10 +42,7 @@ def likelihood(x, n, P):
     for i in range(1, (n - x) + 1):
         fact_nx *= i
 
-    # Kombinezon
     comb = fact_n / (fact_x * fact_nx)
-
-    # Likelihood düsturu
     likelihood_values = comb * (P ** x) * ((1 - P) ** (n - x))
 
     return likelihood_values
