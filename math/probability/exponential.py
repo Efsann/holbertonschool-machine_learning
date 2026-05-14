@@ -23,5 +23,22 @@ class Exponential:
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
 
-            # Eksponensial paylanmada lambtha = 1 / mean
             self.lambtha = float(len(data) / sum(data))
+
+    def pdf(self, x):
+        """
+        Calculates the value of the PDF for a given time period.
+
+        Args:
+            x: the time period
+
+        Returns:
+            The PDF value for x, or 0 if x is out of range.
+        """
+        if x < 0:
+            return 0
+
+        e = 2.7182818285
+        pdf_value = self.lambtha * (e ** (-self.lambtha * x))
+
+        return pdf_value
