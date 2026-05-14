@@ -19,13 +19,13 @@ def correlation(C):
     if C.ndim != 2 or C.shape[0] != C.shape[1]:
         raise ValueError("C must be a 2D square matrix")
 
-    # Dispersiyalar (Variance) matrisin əsas diaqonalındadır
+    # Dispersiyalar matrisin əsas diaqonalındadır
     variance = np.diag(C)
 
-    # Standart meylləşmə (Standard deviation) dispersiyanın kvadrat köküdür
+    # Standart meylləşmə dispersiyanın kvadrat köküdür
     std_dev = np.sqrt(variance)
 
-    # Məxrəcdəki hasilləri (sigma_X * sigma_Y) tapmaq üçün outer product istifadə edirik
+    # Məxrəc (sigma_X * sigma_Y) üçün outer product
     std_dev_matrix = np.outer(std_dev, std_dev)
 
     # Korrelyasiya = Kovariasiya / (sigma_X * sigma_Y)
