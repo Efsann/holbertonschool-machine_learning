@@ -66,9 +66,32 @@ class Normal:
         e = 2.7182818285
         pi = 3.1415926536
 
-        # PDF düsturunun hesablanması
         coefficient = 1 / (self.stddev * ((2 * pi) ** 0.5))
         exponent = -0.5 * (((x - self.mean) / self.stddev) ** 2)
         pdf_value = coefficient * (e ** exponent)
 
         return pdf_value
+
+    def cdf(self, x):
+        """
+        Calculates the value of the CDF for a given x-value.
+
+        Args:
+            x: the x-value
+
+        Returns:
+            The CDF value for x.
+        """
+        pi = 3.1415926536
+
+        # 1. z dəyərini tapırıq
+        z = (x - self.mean) / (self.stddev * (2 ** 0.5))
+
+        # 2. Xəta funksiyasını (erf) Taylor sırası ilə hesablayırıq
+        erf_z = (2 / (pi ** 0.5)) * (z - (z ** 3) / 3 + (z ** 5) / 10 -
+                                     (z ** 7) / 42 + (z ** 9) / 216)
+
+        # 3. CDF düsturunu tətbiq edirik
+        cdf_value = 0.5 * (1 + erf_z)
+
+        return cdf_value
