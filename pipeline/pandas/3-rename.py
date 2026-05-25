@@ -16,13 +16,7 @@ def rename(df):
     Returns:
         pd.DataFrame: The modified DataFrame.
     """
-    # 1. Sütunun adını dəyişirik
     df = df.rename(columns={'Timestamp': 'Datetime'})
-    
-    # 2. UNIX saniyələrini oxunabilən tarix formatına çeviririk
     df['Datetime'] = pd.to_datetime(df['Datetime'], unit='s')
-    
-    # 3. Yalnız Datetime və Close sütunlarını seçirik
     df = df[['Datetime', 'Close']]
-    
     return df
