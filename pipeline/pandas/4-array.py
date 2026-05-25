@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """
-Defines array
+Defines a function to convert a dataframe to numpy array
 """
-import pandas as pd
 
 
 def array(df):
     """
-    Selects
+    Selects the last 10 rows of High and Close columns
     """
-    return df[['High', 'Close']].tail(10).values
+    return df[['High', 'Close']].tail(10).to_numpy()
