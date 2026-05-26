@@ -8,7 +8,7 @@ import numpy as np
 
 def line():
     """
-    Plots y as a line graph
+    Plots y as a solid red line graph
     """
     y = np.arange(0, 11) ** 3
     plt.figure(figsize=(6.4, 4.8))
