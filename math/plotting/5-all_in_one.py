@@ -1,11 +1,8 @@
-#!/usr/bin/env python3
 """
 All in One plotting module
 """
 import matplotlib.pyplot as plt
 import numpy as np
-
-
 def all_in_one():
     """
     Plots all 5 previous graphs in a 3x2 grid layout
@@ -30,17 +27,14 @@ def all_in_one():
     student_grades = np.random.normal(68, 15, 50)
     fig = plt.figure(figsize=(6.4, 4.8))
     plt.suptitle('All in One')
-    # Plot 0: Line graph (Row 0, Col 0)
     ax0 = plt.subplot(3, 2, 1)
     ax0.plot(y0, 'r-')
     ax0.set_xlim(0, 10)
-    # Plot 1: Scatter plot (Row 0, Col 1)
     ax1 = plt.subplot(3, 2, 2)
     ax1.scatter(x1, y1, c='magenta', s=10)
     ax1.set_title("Men's Height vs Weight", fontsize='x-small')
     ax1.set_xlabel('Height (in)', fontsize='x-small')
     ax1.set_ylabel('Weight (lbs)', fontsize='x-small')
-    # Plot 2: Change of scale (Row 1, Col 0)
     ax2 = plt.subplot(3, 2, 3)
     ax2.plot(x2, y2)
     ax2.set_yscale('log')
@@ -48,7 +42,6 @@ def all_in_one():
     ax2.set_title('Exponential Decay of C-14', fontsize='x-small')
     ax2.set_xlabel('Time (years)', fontsize='x-small')
     ax2.set_ylabel('Fraction Remaining', fontsize='x-small')
-    # Plot 3: Two is better than one (Row 1, Col 1)
     ax3 = plt.subplot(3, 2, 4)
     ax3.plot(x3, y31, 'r--', label='C-14')
     ax3.plot(x3, y32, 'g-', label='Ra-226')
@@ -59,7 +52,6 @@ def all_in_one():
     ax3.set_xlabel('Time (years)', fontsize='x-small')
     ax3.set_ylabel('Fraction Remaining', fontsize='x-small')
     ax3.legend(loc='upper right', fontsize='x-small')
-    # Plot 4: Frequency Histogram (Row 2, spanning 2 columns)
     ax4 = plt.subplot(3, 1, 3)
     ax4.hist(student_grades, bins=np.arange(0, 101, 10), edgecolor='black')
     ax4.set_xlim(0, 100)
