@@ -52,24 +52,18 @@ class Isolation_Random_Tree():
 
     def random_split_criterion(self, node):
         """Təsadüfi olaraq bir əlamət və threshold seçir"""
-        # Node-a aid olan alt-populyasiyanın indekslərini tapırıq
         indices = np.where(node.sub_population)[0]
         data = self.explanatory[indices]
 
-        # Mövcud datadakı min və max dəyərləri tapırıq
         min_vals = np.min(data, axis=0)
         max_vals = np.max(data, axis=0)
 
-        # Dəyişən (sabit olmayan) əlamətləri seçirik
         valid_features = np.where(min_vals < max_vals)[0]
 
         if len(valid_features) == 0:
             return 0, 0.0
 
-        # Təsadüfi bir əlamət seçirik
         feature = self.rng.choice(valid_features)
-
-        # Həmin əlamətin min və max sərhədləri arasında random threshold seçirik
         threshold = self.rng.uniform(min_vals[feature], max_vals[feature])
 
         return feature, threshold
@@ -89,7 +83,6 @@ class Isolation_Random_Tree():
 
     def fit_node(self, node):
         """Düyünü təsadüfi kriteriyalara əsasən bölür"""
-        # Əgər cari populyasiya boşdursa və ya hamısı eynidirsə dayandırırıq
         if np.sum(node.sub_population) <= self.min_pop:
             return
 
@@ -97,13 +90,11 @@ class Isolation_Random_Tree():
         node.feature = feature
         node.threshold = threshold
 
-        # Sol və sağ övladlar üçün sub_population maskalarını yaradırıq
         left_population = node.sub_population & (
             self.explanatory[:, feature] <= threshold)
         right_population = node.sub_population & (
             self.explanatory[:, feature] > threshold)
 
-        # Sol düyünün yarpaq olub-olmaması yoxlanılır
         is_left_leaf = (node.depth + 1 >= self.max_depth or
                         np.sum(left_population) <= self.min_pop)
 
@@ -113,7 +104,6 @@ class Isolation_Random_Tree():
             node.left_child = self.get_node_child(node, left_population)
             self.fit_node(node.left_child)
 
-        # Sağ düyünün yarpaq olub-olmaması yoxlanılır
         is_right_leaf = (node.depth + 1 >= self.max_depth or
                          np.sum(right_population) <= self.min_pop)
 
