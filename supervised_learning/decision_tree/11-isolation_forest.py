@@ -19,8 +19,9 @@ class Isolation_Random_Forest():
         self.seed = seed
 
     def predict(self, explanatory):
-        """Bütün ağaclar üzrə fərdlərin ortalama təcrid dərinliyini hesablayır"""
-        predictions = np.array([f(explanatory) for f in self.numpy_preds])
+        """Bütün ağaclar üzrə fərdlərin ortalama təcrid dərinliyini tapır"""
+        predictions = np.array([f(explanatory)
+                                for f in self.numpy_preds])
         return predictions.mean(axis=0)
 
     def fit(self, explanatory, n_trees=100, verbose=0):
@@ -48,7 +49,7 @@ class Isolation_Random_Forest():
                   f"{np.array(leaves).mean()}")
 
     def suspects(self, explanatory, n_suspects):
-        """Ortalama dərinliyi ən kiçik olan n sayda şübhəli anomal sətiri tapır"""
+        """Ortalama dərinliyi ən kiçik olan n şübhəli anomal sətiri tapır"""
         depths = self.predict(explanatory)
         indices = np.argsort(depths)[:n_suspects]
         return explanatory[indices], depths[indices]
