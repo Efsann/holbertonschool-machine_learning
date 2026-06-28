@@ -39,32 +39,31 @@ class Node:
         """Sol övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
         new_text = "    +---> " + lines[0] + "\n"
-        for x in lines[1:-1]:
+        for x in lines[1:]:
             new_text += "    |     " + x + "\n"
-        if len(lines) > 1 and lines[-1]:
-            new_text += "    |     " + lines[-1]
         return new_text
 
     def right_child_add_prefix(self, text):
         """Sağ övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
         new_text = "    +---> " + lines[0] + "\n"
-        for x in lines[1:-1]:
+        for x in lines[1:]:
             new_text += "          " + x + "\n"
-        if len(lines) > 1 and lines[-1]:
-            new_text += "          " + lines[-1]
         return new_text
 
     def __str__(self):
         """Düyünü sətir formatına çevirir"""
         if self.is_root:
-            out = f"root [feature={self.feature}, "
-            out += f"threshold={self.threshold}]\n"
+            out = f"root [feature={self.feature}, threshold={self.threshold}]\n"
         else:
-            out = f"node [feature={self.feature}, "
-            out += f"threshold={self.threshold}]\n"
-        out += self.left_child_add_prefix(self.left_child.__str__())
-        out += self.right_child_add_prefix(self.right_child.__str__())
+            out = f"node [feature={self.feature}, threshold={self.threshold}]\n"
+        
+        # Övladların str metodundan gələn son sətir sonluğunu (.chomp / rstrip) tənzimləyirik
+        left_str = self.left_child.__str__().rstrip("\n")
+        right_str = self.right_child.__str__().rstrip("\n")
+        
+        out += self.left_child_add_prefix(left_str)
+        out += self.right_child_add_prefix(right_str)
         return out
 
 
@@ -87,7 +86,7 @@ class Leaf(Node):
 
     def __str__(self):
         """Yarpağı sətir formatına çevirir"""
-        return f"leaf [value={self.value}]"
+        return f"leaf [value={self.value}]\n"
 
 
 class Decision_Tree():
