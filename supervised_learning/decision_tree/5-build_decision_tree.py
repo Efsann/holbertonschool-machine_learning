@@ -83,14 +83,20 @@ class Node:
         def is_large_enough(x):
             if not self.lower:
                 return np.ones(x.shape[0], dtype=bool)
-            return np.all(np.array([np.greater(x[:, key], self.lower[key]) for key in self.lower.keys()]), axis=0)
+            return np.all(np.array(
+                [np.greater(x[:, k], self.lower[k]) for k in self.lower.keys()]
+            ), axis=0)
 
         def is_small_enough(x):
             if not self.upper:
                 return np.ones(x.shape[0], dtype=bool)
-            return np.all(np.array([np.less_equal(x[:, key], self.upper[key]) for key in self.upper.keys()]), axis=0)
+            return np.all(np.array(
+                [np.less_equal(x[:, k], self.upper[k]) for k in self.upper.keys()]
+            ), axis=0)
 
-        self.indicator = lambda x: np.all(np.array([is_large_enough(x), is_small_enough(x)]), axis=0)
+        self.indicator = lambda x: np.all(np.array(
+            [is_large_enough(x), is_small_enough(x)]
+        ), axis=0)
 
     def __str__(self):
         """Düyünü sətir formatına çevirir"""
@@ -100,9 +106,11 @@ class Node:
             out = f"node [feature={self.feature}, threshold={self.threshold}]"
 
         if self.left_child:
-            out += "\n" + self.left_child_add_prefix(self.left_child.__str__())
+            out += "\n" + self.left_child_add_prefix(
+                self.left_child.__str__())
         if self.right_child:
-            out += "\n" + self.right_child_add_prefix(self.right_child.__str__())
+            out += "\n" + self.right_child_add_prefix(
+                self.right_child.__str__())
 
         return out
 
