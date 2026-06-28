@@ -1,6 +1,7 @@
+cat << 'EOF' > 10-isolation_tree.py
 #!/usr/bin/env python3
 """
-Anomal dəyərləri tapmaq üçün İzolyasiya Ağacı moduludur
+Isolation Random Tree modulunun reallaşdırılması
 """
 import numpy as np
 Node = __import__('8-build_decision_tree').Node
@@ -8,10 +9,10 @@ Leaf = __import__('8-build_decision_tree').Leaf
 
 
 class Isolation_Random_Tree():
-    """Anomallıq analizi üçün təsadüfi izolyasiya ağacı sinfi"""
+    """Anomaliyaları aşkar etmək üçün Isolation Random Tree sinfi"""
 
     def __init__(self, max_depth=10, seed=0, root=None):
-        """İzolyasiya ağacının ilkin parametrlərini başladır"""
+        """Obyektin ilkin parametrlərini başladır"""
         self.rng = np.random.default_rng(seed)
         if root:
             self.root = root
@@ -23,7 +24,7 @@ class Isolation_Random_Tree():
         self.min_pop = 1
 
     def __str__(self):
-        """Ağac strukturunu sətir kimi qaytarır"""
+        """Ağacın strukturunu sətir kimi vizuallaşdırır"""
         return self.root.__str__()
 
     def depth(self):
@@ -31,19 +32,19 @@ class Isolation_Random_Tree():
         return self.root.max_depth_below()
 
     def count_nodes(self, only_leaves=False):
-        """Ağacdakı düyün və ya yarpaqların sayını hesablayır"""
+        """Ağacdakı düyünlərin və ya yarpaqların sayını hesablayır"""
         return self.root.count_nodes_below(only_leaves=only_leaves)
 
     def update_bounds(self):
-        """Bütün düyünlərin həndəsi sərhədlərini yeniləyir"""
+        """Hər bir düyün üçün sərhədləri yeniləyir"""
         self.root.update_bounds_below()
 
     def get_leaves(self):
-        """Ağacın bütün son yarpaqlarını çəkir"""
+        """Ağacdakı bütün yarpaqların siyahısını qaytarır"""
         return self.root.get_leaves_below()
 
     def update_predict(self):
-        """Sürətli proqnoz funksiyasını yaradır"""
+        """Proqnozlaşdırma funksiyasını yeniləyir"""
         self.update_bounds()
         leaves = self.get_leaves()
         for leaf in leaves:
@@ -57,8 +58,7 @@ class Isolation_Random_Tree():
         return np.min(arr), np.max(arr)
 
     def random_split_criterion(self, node):
-        """Təsadüfi olaraq əlamət və sərhəd həddi seçir"""
-        # Əgər alt populyasiyada fərqli dəyər yoxdursa, birbaşa sıfır qaytarırıq
+        """Təsadüfi olaraq bir əlamət və threshold seçir"""
         sub_X = self.explanatory[node.sub_population]
         if np.all(sub_X == sub_X[0]):
             return 0, 0.0
@@ -75,22 +75,21 @@ class Isolation_Random_Tree():
         return feature, threshold
 
     def get_leaf_child(self, node, sub_population):
-        """Yarpaq obyekti yaradır və dəyər olaraq onun dərinliyini təyin edir"""
+        """Yarpaq övlad obyektini yaradır və nizamlayır"""
         leaf_child = Leaf(node.depth + 1)
         leaf_child.depth = node.depth + 1
         leaf_child.sub_population = sub_population
         return leaf_child
 
     def get_node_child(self, node, sub_population):
-        """Yeni bir daxili düyün obyekti yaradır"""
+        """Daxili düyün övlad obyektini yaradır və nizamlayır"""
         n = Node()
         n.depth = node.depth + 1
         n.sub_population = sub_population
         return n
 
     def fit_node(self, node):
-        """Düyünləri ancaq populyasiya və dərinliyə görə bölərək ağacı qurur"""
-        # Əgər düyündəki bütün nöqtələr eynidirsə, bölməni dayandırırıq
+        """Düyünü təsadüfi kriteriyalara əsasən bölür"""
         sub_X = self.explanatory[node.sub_population]
         if len(sub_X) <= self.min_pop or np.all(sub_X == sub_X[0]):
             return
@@ -131,7 +130,7 @@ class Isolation_Random_Tree():
             self.fit_node(node.right_child)
 
     def fit(self, explanatory, verbose=0):
-        """İzolyasiya ağacını verilən massiv üzərində öyrədir"""
+        """Verilən məlumatlar əsasında Isolation Tree modelini öyrədir"""
         self.split_criterion = self.random_split_criterion
         self.explanatory = explanatory
         self.root.sub_population = np.ones(explanatory.shape[0], dtype='bool')
@@ -145,3 +144,4 @@ class Isolation_Random_Tree():
             print(f"    - Number of nodes           : {self.count_nodes()}")
             print(f"    - Number of leaves          : "
                   f"{self.count_nodes(only_leaves=True)}")
+EOF
