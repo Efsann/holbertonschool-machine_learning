@@ -58,6 +58,11 @@ class Isolation_Random_Tree():
 
     def random_split_criterion(self, node):
         """Təsadüfi olaraq əlamət və sərhəd həddi seçir"""
+        # Əgər alt populyasiyada fərqli dəyər yoxdursa, birbaşa sıfır qaytarırıq
+        sub_X = self.explanatory[node.sub_population]
+        if np.all(sub_X == sub_X[0]):
+            return 0, 0.0
+
         diff = 0
         while diff == 0:
             feature = self.rng.integers(0, self.explanatory.shape[1])
@@ -85,6 +90,11 @@ class Isolation_Random_Tree():
 
     def fit_node(self, node):
         """Düyünləri ancaq populyasiya və dərinliyə görə bölərək ağacı qurur"""
+        # Əgər düyündəki bütün nöqtələr eynidirsə, bölməni dayandırırıq
+        sub_X = self.explanatory[node.sub_population]
+        if len(sub_X) <= self.min_pop or np.all(sub_X == sub_X[0]):
+            return
+
         node.feature, node.threshold = self.random_split_criterion(node)
 
         left_population = node.sub_population & (
@@ -96,7 +106,9 @@ class Isolation_Random_Tree():
 
         is_left_leaf = (
             np.sum(left_population) < self.min_pop or
-            node.depth + 1 == self.max_depth
+            node.depth + 1 == self.max_depth or
+            np.all(self.explanatory[left_population] ==
+                   self.explanatory[left_population][0])
         )
 
         if is_left_leaf:
@@ -107,7 +119,9 @@ class Isolation_Random_Tree():
 
         is_right_leaf = (
             np.sum(right_population) < self.min_pop or
-            node.depth + 1 == self.max_depth
+            node.depth + 1 == self.max_depth or
+            np.all(self.explanatory[right_population] ==
+                   self.explanatory[right_population][0])
         )
 
         if is_right_leaf:
