@@ -41,7 +41,7 @@ class Node:
         new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
             if x:
-                new_text += ("    |     " + x) + "\n"
+                new_text += "    |     " + x + "\n"
         return new_text
 
     def right_child_add_prefix(self, text):
@@ -50,15 +50,17 @@ class Node:
         new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
             if x:
-                new_text += ("          " + x) + "\n"
+                new_text += "          " + x + "\n"
         return new_text
 
     def __str__(self):
         """Düyünü sətir formatına çevirir"""
         if self.is_root:
-            out = f"root [feature={self.feature}, threshold={self.threshold}]\n"
+            out = f"root [feature={self.feature}, "
+            out += f"threshold={self.threshold}]\n"
         else:
-            out = f"node [feature={self.feature}, threshold={self.threshold}]\n"
+            out = f"node [feature={self.feature}, "
+            out += f"threshold={self.threshold}]\n"
         out += self.left_child_add_prefix(self.left_child.__str__())
         out += self.right_child_add_prefix(self.right_child.__str__())
         return out
