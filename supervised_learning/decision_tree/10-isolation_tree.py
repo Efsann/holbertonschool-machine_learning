@@ -51,8 +51,28 @@ class Isolation_Random_Tree():
         return np.min(arr), np.max(arr)
 
     def random_split_criterion(self, node):
-        """Təsadüfi bölmə kriteriyasını hesablayır"""
-        return node.random_split_criterion()
+        """Təsadüfi olaraq bir əlamət və threshold seçir"""
+        # Node-a aid olan alt-populyasiyanın indekslərini tapırıq
+        indices = np.where(node.sub_population)[0]
+        data = self.explanatory[indices]
+
+        # Mövcud datadakı min və max dəyərləri tapırıq
+        min_vals = np.min(data, axis=0)
+        max_vals = np.max(data, axis=0)
+
+        # Dəyişən (sabit olmayan) əlamətləri seçirik
+        valid_features = np.where(min_vals < max_vals)[0]
+
+        if len(valid_features) == 0:
+            return 0, 0.0
+
+        # Təsadüfi bir əlamət seçirik
+        feature = self.rng.choice(valid_features)
+
+        # Həmin əlamətin min və max sərhədləri arasında random threshold seçirik
+        threshold = self.rng.uniform(min_vals[feature], max_vals[feature])
+
+        return feature, threshold
 
     def get_leaf_child(self, node, sub_population):
         """Yarpaq övlad obyektini yaradır və nizamlayır"""
@@ -63,14 +83,25 @@ class Isolation_Random_Tree():
 
     def get_node_child(self, node, sub_population):
         """Daxili düyün övlad obyektini yaradır və nizamlayır"""
-        return node.get_node_child(sub_population)
+        child = Node(depth=node.depth + 1)
+        child.sub_population = sub_population
+        return child
 
     def fit_node(self, node):
         """Düyünü təsadüfi kriteriyalara əsasən bölür"""
-        node.feature, node.threshold = self.random_split_criterion(node)
+        # Əgər cari populyasiya boşdursa və ya hamısı eynidirsə dayandırırıq
+        if np.sum(node.sub_population) <= self.min_pop:
+            return
 
-        left_population = node.left_child_sub_population()
-        right_population = node.right_child_sub_population()
+        feature, threshold = self.random_split_criterion(node)
+        node.feature = feature
+        node.threshold = threshold
+
+        # Sol və sağ övladlar üçün sub_population maskalarını yaradırıq
+        left_population = node.sub_population & (
+            self.explanatory[:, feature] <= threshold)
+        right_population = node.sub_population & (
+            self.explanatory[:, feature] > threshold)
 
         # Sol düyünün yarpaq olub-olmaması yoxlanılır
         is_left_leaf = (node.depth + 1 >= self.max_depth or
