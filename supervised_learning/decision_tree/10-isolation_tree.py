@@ -75,7 +75,8 @@ class Isolation_Random_Tree():
         return feature, threshold
 
     def get_leaf_child(self, node, sub_population):
-        """Yarpaq obyekti yaradır və dəyər olaraq onun dərinliyini təyin edir"""
+        """Yarpaq obyekti yaradır və dəyər olaraq onun dərinliyini təyin edir"\
+            ""
         leaf_child = Leaf(node.depth + 1)
         leaf_child.depth = node.depth + 1
         leaf_child.sub_population = sub_population
