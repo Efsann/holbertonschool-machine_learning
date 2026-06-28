@@ -21,63 +21,56 @@ class Node:
 
     def max_depth_below(self):
         """Düyündən aşağıda qalan maksimum dərinliyi hesablayır"""
-        left_depth = self.left_child.max_depth_below()
-        right_depth = self.right_child.max_depth_below()
+        left_depth = self.left_child.max_depth_below() if self.left_child else self.depth
+        right_depth = self.right_child.max_depth_below() if self.right_child else self.depth
         return max(left_depth, right_depth)
 
     def count_nodes_below(self, only_leaves=False):
         """Düyündən aşağıda qalan düyün və ya yarpaqların sayını hesablayır"""
-        left_count = self.left_child.count_nodes_below(
-            only_leaves=only_leaves)
-        right_count = self.right_child.count_nodes_below(
-            only_leaves=only_leaves)
+        left_count = self.left_child.count_nodes_below(only_leaves=only_leaves) if self.left_child else 0
+        right_count = self.right_child.count_nodes_below(only_leaves=only_leaves) if self.right_child else 0
+        
         if only_leaves:
             return left_count + right_count
         return 1 + left_count + right_count
 
     def left_child_add_prefix(self, text):
-        """Sol övladın budaqları üçün prefiks əlavə edir"""
+        """Sol övladın budaqları üçün prefiks əlavə edir (Şərtdə verilən)"""
         lines = text.split("\n")
-        new_text = "    +---> " + lines[0]
+        new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
             if x:
-                new_text += "\n    |     " + x
+                new_text += ("    |  " + x) + "\n"
         return new_text
 
     def right_child_add_prefix(self, text):
-        """Sağ övladın budaqları üçün prefiks əlavə edir"""
+        """Sağ övladın budaqları üçün prefiks əlavə edir (Sizin yazmalı olduğunuz)"""
         lines = text.split("\n")
-        new_text = "    +---> " + lines[0]
+        new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
             if x:
-                new_text += "\n          " + x
+                new_text += ("       " + x) + "\n"
         return new_text
 
     def __str__(self):
         """Düyünü sətir formatına çevirir"""
         if self.is_root:
-            out = f"root [feature={self.feature}, threshold={self.threshold}]"
+            out = f"root [feature={self.feature}, threshold={self.threshold}]\n"
         else:
-            out = f"node [feature={self.feature}, threshold={self.threshold}]"
+            out = f"node [feature={self.feature}, threshold={self.threshold}]\n"
 
-        left_str = self.left_child.__str__()
-        right_str = self.right_child.__str__()
-
-        # Rekursiyada yaranan dublikat "+--->" və ya "->"-ləri təmizləyirik
-        if left_str.startswith("-> "):
-            left_str = left_str[3:]
-        if right_str.startswith("-> "):
-            right_str = right_str[3:]
-
-        out += "\n" + self.left_child_add_prefix(left_str)
-        out += "\n" + self.right_child_add_prefix(right_str)
+        if self.left_child:
+            out += self.left_child_add_prefix(self.left_child.__str__())
+        if self.right_child:
+            out += self.right_child_add_prefix(self.right_child.__str__())
+            
         return out
 
 
 class Leaf(Node):
     """Qərar ağacındakı yarpaq düyünü təmsil edən sinif"""
 
-    def __init__(self, value, depth=None):
+    def __init__(self, value, depth=0):
         super().__init__()
         self.value = value
         self.is_leaf = True
@@ -92,8 +85,8 @@ class Leaf(Node):
         return 1
 
     def __str__(self):
-        """Yarpağı sətir formatına çevirir"""
-        return f"leaf [value={self.value}]"
+        """Yarpağı sətir formatına çevirir (Şərtdə tələb olunan format)"""
+        return f"-> leaf [value={self.value}]"
 
 
 class Decision_Tree():
@@ -122,5 +115,5 @@ class Decision_Tree():
         return self.root.count_nodes_below(only_leaves=only_leaves)
 
     def __str__(self):
-        """Ağacı bütövlükdə sətir kimi vizuallaşdırır"""
+        """Ağacı bütövlükdə sətir kimi vizuallaşdırır (Şərtdə tələb olunan)"""
         return self.root.__str__()
