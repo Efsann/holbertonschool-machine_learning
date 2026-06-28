@@ -1,4 +1,3 @@
-cat << 'EOF' > 2-build_decision_tree.py
 #!/usr/bin/env python3
 """
 Qərar ağacını qurmaq və vizuallaşdırmaq üçün modul
@@ -126,4 +125,3 @@ class Decision_Tree():
     def __str__(self):
         """Ağacı bütövlükdə sətir kimi vizuallaşdırır"""
         return self.root.__str__()
-EOF
