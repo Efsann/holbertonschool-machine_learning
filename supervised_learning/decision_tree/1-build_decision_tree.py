@@ -27,8 +27,10 @@ class Node:
 
     def count_nodes_below(self, only_leaves=False):
         """Düyündən aşağıda qalan düyün və ya yarpaqların sayını hesablayır"""
-        left_count = self.left_child.count_nodes_below(only_leaves=only_leaves)
-        right_count = self.right_child.count_nodes_below(only_leaves=only_leaves)
+        left_count = self.left_child.count_nodes_below(
+            only_leaves=only_leaves)
+        right_count = self.right_child.count_nodes_below(
+            only_leaves=only_leaves)
         if only_leaves:
             return left_count + right_count
         return 1 + left_count + right_count
