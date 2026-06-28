@@ -18,6 +18,7 @@ class Node:
         self.depth = depth
 
     def max_depth_below(self):
+        """Calculates the maximum depth of the tree below this specific node"""
         left_depth = (self.left_child.max_depth_below()
                       if self.left_child else self.depth)
         right_depth = (self.right_child.max_depth_below()
@@ -25,6 +26,7 @@ class Node:
         return max(left_depth, right_depth)
 
     def count_nodes_below(self, only_leaves=False):
+        """Counts the total number of nodes or leaves below this node"""
         left_count = (self.left_child.count_nodes_below(
             only_leaves=only_leaves) if self.left_child else 0)
         right_count = (self.right_child.count_nodes_below(
@@ -34,6 +36,7 @@ class Node:
         return 1 + left_count + right_count
 
     def left_child_add_prefix(self, text):
+        """Adds appropriate indentation prefixes for the left child nodes"""
         lines = text.split("\n")
         new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
@@ -41,6 +44,7 @@ class Node:
         return new_text
 
     def right_child_add_prefix(self, text):
+        """Adds appropriate indentation prefixes for the right child nodes"""
         lines = text.split("\n")
         new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
@@ -73,9 +77,11 @@ class Leaf(Node):
         self.depth = depth
 
     def max_depth_below(self):
+        """Returns the current depth level of this specific leaf node"""
         return self.depth
 
     def count_nodes_below(self, only_leaves=False):
+        """Returns the total node count for a leaf which is always one"""
         return 1
 
     def __str__(self):
@@ -100,9 +106,11 @@ class Decision_Tree():
         self.predict = None
 
     def depth(self):
+        """Returns the total depth of the initialized decision tree model"""
         return self.root.max_depth_below()
 
     def count_nodes(self, only_leaves=False):
+        """Counts all existing nodes or leaves inside the decision tree"""
         return self.root.count_nodes_below(only_leaves=only_leaves)
 
     def __str__(self):
