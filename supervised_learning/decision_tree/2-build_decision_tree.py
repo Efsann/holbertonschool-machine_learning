@@ -60,13 +60,17 @@ class Node:
         if self.is_root:
             out = f"root [feature={self.feature}, threshold={self.threshold}]\n"
         else:
-            out = f"-> node [feature={self.feature}, " \
-                  f"threshold={self.threshold}]\n"
+            out = f"node [feature={self.feature}, threshold={self.threshold}]\n"
 
         if self.left_child:
-            out += self.left_child_add_prefix(self.left_child.__str__())
+            # Öncə alt sətirlərin sonundakı boş sətirləri təmizləyirik
+            left_str = self.left_child.__str__().strip("\n")
+            # Prefiks tətbiq edib əsas mətnə əlavə edirik
+            out += self.left_child_add_prefix(left_str)
         if self.right_child:
-            out += self.right_child_add_prefix(self.right_child.__str__())
+            # Eyni təmizləməni sağ budaq üçün də edirik
+            right_str = self.right_child.__str__().strip("\n")
+            out += self.right_child_add_prefix(right_str)
 
         return out
 
