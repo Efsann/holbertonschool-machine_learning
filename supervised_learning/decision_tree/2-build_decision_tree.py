@@ -29,41 +29,39 @@ class Node:
         """Düyündən aşağıda qalan düyün və ya yarpaqların sayını hesablayır"""
         left_count = self.left_child.count_nodes_below(only_leaves=only_leaves) if self.left_child else 0
         right_count = self.right_child.count_nodes_below(only_leaves=only_leaves) if self.right_child else 0
-        
+
         if only_leaves:
             return left_count + right_count
         return 1 + left_count + right_count
 
     def left_child_add_prefix(self, text):
-        """Sol övladın budaqları üçün prefiks əlavə edir (Şərtdə verilən)"""
+        """Sol övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
-        new_text = "    +--" + lines[0] + "\n"
+        new_text = "    +--" + lines[0]
         for x in lines[1:]:
-            if x:
-                new_text += ("    |  " + x) + "\n"
+            new_text += "\n    |  " + x
         return new_text
 
     def right_child_add_prefix(self, text):
-        """Sağ övladın budaqları üçün prefiks əlavə edir (Sizin yazmalı olduğunuz)"""
+        """Sağ övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
-        new_text = "    +--" + lines[0] + "\n"
+        new_text = "    +--" + lines[0]
         for x in lines[1:]:
-            if x:
-                new_text += ("       " + x) + "\n"
+            new_text += "\n       " + x
         return new_text
 
     def __str__(self):
         """Düyünü sətir formatına çevirir"""
         if self.is_root:
-            out = f"root [feature={self.feature}, threshold={self.threshold}]\n"
+            out = f"root [feature={self.feature}, threshold={self.threshold}]"
         else:
-            out = f"node [feature={self.feature}, threshold={self.threshold}]\n"
+            out = f"node [feature={self.feature}, threshold={self.threshold}]"
 
         if self.left_child:
-            out += self.left_child_add_prefix(self.left_child.__str__())
+            out += "\n" + self.left_child_add_prefix(self.left_child.__str__())
         if self.right_child:
-            out += self.right_child_add_prefix(self.right_child.__str__())
-            
+            out += "\n" + self.right_child_add_prefix(self.right_child.__str__())
+
         return out
 
 
@@ -85,7 +83,7 @@ class Leaf(Node):
         return 1
 
     def __str__(self):
-        """Yarpağı sətir formatına çevirir (Şərtdə tələb olunan format)"""
+        """Yarpağı sətir formatına çevirir"""
         return f"-> leaf [value={self.value}]"
 
 
@@ -115,5 +113,5 @@ class Decision_Tree():
         return self.root.count_nodes_below(only_leaves=only_leaves)
 
     def __str__(self):
-        """Ağacı bütövlükdə sətir kimi vizuallaşdırır (Şərtdə tələb olunan)"""
+        """Ağacı bütövlükdə sətir kimi vizuallaşdırır"""
         return self.root.__str__()
