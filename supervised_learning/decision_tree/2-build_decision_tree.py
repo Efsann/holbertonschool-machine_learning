@@ -58,7 +58,9 @@ class Node:
     def __str__(self):
         """Düyünü sətir formatına çevirir"""
         if self.is_root:
-            out = f"root [feature={self.feature}, threshold={self.threshold}]\n"
+        if self.is_root:
+            out = f"root [feature={self.feature}, " \
+                  f"threshold={self.threshold}]\n"
         else:
             out = f"-> node [feature={self.feature}, " \
                   f"threshold={self.threshold}]\n"
