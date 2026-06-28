@@ -1,4 +1,4 @@
-kcat << 'EOF' > 3-build_decision_tree.py
+cat << 'EOF' > 3-build_decision_tree.py
 #!/usr/bin/env python3
 """
 Qərar ağacını çap etmək və idarə etmək üçün vizuallaşdırma moduludur
