@@ -1,3 +1,4 @@
+cat << 'EOF' > 2-build_decision_tree.py
 #!/usr/bin/env python3
 """
 Qərar ağacını qurmaq və vizuallaşdırmaq üçün modul
@@ -40,19 +41,22 @@ class Node:
         return 1 + left_count + right_count
 
     def left_child_add_prefix(self, text):
-        """Sol övladın budaqları üçün prefiks əlavə edir (Şərtdə verilən)"""
+        """Sol övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
-        new_text = "    +--" + lines[0] + "\n"
+        new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
-            new_text += ("    |  " + x) + "\n"
+            new_text += ("    |      " + x) + "\n"
         return new_text
 
     def right_child_add_prefix(self, text):
         """Sağ övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
-        new_text = "    +--" + lines[0] + "\n"
+        new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
-            new_text += ("       " + x) + "\n"
+            if x:
+                new_text += ("           " + x) + "\n"
+            else:
+                new_text += "\n"
         return new_text
 
     def __str__(self):
@@ -63,12 +67,9 @@ class Node:
             out = f"node [feature={self.feature}, threshold={self.threshold}]\n"
 
         if self.left_child:
-            # Öncə alt sətirlərin sonundakı boş sətirləri təmizləyirik
             left_str = self.left_child.__str__().strip("\n")
-            # Prefiks tətbiq edib əsas mətnə əlavə edirik
             out += self.left_child_add_prefix(left_str)
         if self.right_child:
-            # Eyni təmizləməni sağ budaq üçün də edirik
             right_str = self.right_child.__str__().strip("\n")
             out += self.right_child_add_prefix(right_str)
 
@@ -94,8 +95,8 @@ class Leaf(Node):
         return 1
 
     def __str__(self):
-        """Yarpağı sətir formatına çevirir (Şərtdə verilən)"""
-        return f"-> leaf [value={self.value}]"
+        """Yarpağı sətir formatına çevirir"""
+        return f"leaf [value={self.value}]"
 
 
 class Decision_Tree():
@@ -125,5 +126,6 @@ class Decision_Tree():
         return self.root.count_nodes_below(only_leaves=only_leaves)
 
     def __str__(self):
-        """Ağacı bütövlükdə sətir kimi vizuallaşdırır (Şərtdə verilən)"""
-        return self.root.__str__()
+        """Ağacı bütövlükdə sətir kimi vizuallaşdırır"""
+        return self.root.__str__() + "\n"
+EOF
