@@ -28,7 +28,7 @@ class Random_Forest():
         tree_predictions = np.array([pred(explanatory)
                                      for pred in self.numpy_preds])
 
-        # Hər bir fərd üçün ən Xcode təkrarlanan (mode) sinfi hesablayırıq
+        # Hər bir fərd üçün ən çox təkrarlanan (mode) sinfi hesablayırıq
         num_individuals = explanatory.shape[0]
         modes = np.array([np.bincount(tree_predictions[:, i]).argmax()
                           for i in range(num_individuals)])
@@ -36,7 +36,7 @@ class Random_Forest():
         return modes
 
     def fit(self, explanatory, target, n_trees=100, verbose=0):
-        """Təsadüfi bölgü kriteriyası ilə n sayda ağac quraraq meşəni öyrədir"""
+        """Təsadüfi bölgü kriteriyası ilə ağaclar quraraq meşəni öyrədir"""
         self.target = target
         self.explanatory = explanatory
         self.numpy_preds = []
