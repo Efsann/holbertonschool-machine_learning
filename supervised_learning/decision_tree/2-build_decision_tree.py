@@ -20,19 +20,18 @@ class Node:
         self.is_leaf = False
 
     def left_child_add_prefix(self, text):
-        """Sol budaqdan gələn alt sətirlərin başına iyerarxik xətlər əlavə edir"""
+        """Sol budaqdan gələn alt sətirlərin başına ox və iyerarxiya artırır"""
         lines = text.split("\n")
-        new_text = "    +--" + lines[0] + "\n"
+        new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
             new_text += ("    |  " + x) + "\n"
         return new_text
 
     def right_child_add_prefix(self, text):
-        """Sağ budaqdan gələn alt sətirlərin başına boşluqlar əlavə edir"""
+        """Sağ budaqdan gələn alt sətirlərin başına ox və boşluqlar artırır"""
         lines = text.split("\n")
-        new_text = "    +--" + lines[0] + "\n"
+        new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
-            # Əgər sətir boşdursa, sonuna lazımsız boşluq əlavə etmirik
             if x:
                 new_text += ("       " + x) + "\n"
             else:
@@ -54,8 +53,6 @@ class Node:
             right_str = self.right_child.__str__()
             out += self.right_child_add_prefix(right_str)
 
-        # Çap formatının main daxilindəki çıxışla tam uzlaşması üçün 
-        # tənzimləmə edirik və artıq n-ləri silirik
         return out.strip("\n")
 
 
@@ -70,7 +67,7 @@ class Leaf:
 
     def __str__(self):
         """Yarpağın terminal formatında mətn qarşılığını qaytarır"""
-        return f"-> leaf [value={self.value}]"
+        return f"leaf [value={self.value}]"
 
 
 class Decision_Tree:
