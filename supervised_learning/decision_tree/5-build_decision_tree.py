@@ -62,8 +62,8 @@ class Node:
     def update_bounds_below(self):
         """Düyünlərin alt sərhədlərini rekursiv hesablayır"""
         if self.is_root:
-            self.upper = {}
-            self.lower = {}
+            self.upper = {0: np.inf}
+            self.lower = {0: -1 * np.inf}
 
         if self.left_child:
             self.left_child.lower = self.lower.copy()
@@ -84,14 +84,16 @@ class Node:
             if not self.lower:
                 return np.ones(x.shape[0], dtype=bool)
             return np.all(np.array(
-                [np.greater(x[:, k], self.lower[k]) for k in self.lower.keys()]
+                [np.greater(x[:, k], self.lower[k])
+                 for k in self.lower.keys()]
             ), axis=0)
 
         def is_small_enough(x):
             if not self.upper:
                 return np.ones(x.shape[0], dtype=bool)
             return np.all(np.array(
-                [np.less_equal(x[:, k], self.upper[k]) for k in self.upper.keys()]
+                [np.less_equal(x[:, k], self.upper[k])
+                 for k in self.upper.keys()]
             ), axis=0)
 
         self.indicator = lambda x: np.all(np.array(
@@ -106,8 +108,7 @@ class Node:
             out = f"node [feature={self.feature}, threshold={self.threshold}]"
 
         if self.left_child:
-            out += "\n" + self.left_child_add_prefix(
-                self.left_child.__str__())
+            out += "\n" + self.left_child_add_prefix(self.left_child.__str__())
         if self.right_child:
             out += "\n" + self.right_child_add_prefix(
                 self.right_child.__str__())
@@ -125,18 +126,23 @@ class Leaf(Node):
         self.depth = depth
 
     def max_depth_below(self):
+        """Yarpağın öz dərinliyini qaytarır"""
         return self.depth
 
     def count_nodes_below(self, only_leaves=False):
+        """Yarpaq hər zaman 1 olaraq sayılır"""
         return 1
 
     def get_leaves_below(self):
+        """Yarpaq özü bir yarpaq olduğu üçün özünü siyahıda qaytarır"""
         return [self]
 
     def update_bounds_below(self):
+        """Yarpaq son nöqtə olduğu üçün sərhəd yeniləməsini dayandırır"""
         pass
 
     def __str__(self):
+        """Yarpağı sətir formatına çevirir"""
         return f"-> leaf [value={self.value}]"
 
 
@@ -158,16 +164,21 @@ class Decision_Tree():
         self.predict = None
 
     def depth(self):
+        """Ağacın ümumi maksimum dərinliyini qaytarır"""
         return self.root.max_depth_below()
 
     def count_nodes(self, only_leaves=False):
+        """Ağacda olan düyünlərin sayını hesablayır"""
         return self.root.count_nodes_below(only_leaves=only_leaves)
 
     def get_leaves(self):
+        """Ağacın kökündən başlayaraq bütün yarpaqları çəkir"""
         return self.root.get_leaves_below()
 
     def update_bounds(self):
+        """Bütün ağac üzrə sərhədlərin hesablanmasını başladır"""
         self.root.update_bounds_below()
 
     def __str__(self):
+        """Ağacı bütövlükdə sətir kimi vizuallaşdırır"""
         return self.root.__str__()
