@@ -1,6 +1,3 @@
-cd ~/holbertonschool-machine_learning/supervised_learning/decision_tree
-
-cat << 'EOF' > 10-isolation_tree.py
 #!/usr/bin/env python3
 """
 Isolation Random Tree modulunun reallaşdırılması
@@ -69,7 +66,7 @@ class Isolation_Random_Tree():
         return node.get_node_child(sub_population)
 
     def fit_node(self, node):
-        """Düyünü təsadüfi kriteriyalara əsasən bölür və alt budaqları qurur"""
+        """Düyünü təsadüfi kriteriyalara əsasən bölür"""
         node.feature, node.threshold = self.random_split_criterion(node)
 
         left_population = node.left_child_sub_population()
@@ -109,4 +106,3 @@ class Isolation_Random_Tree():
     - Depth                     : { self.depth()       }
     - Number of nodes           : { self.count_nodes() }
     - Number of leaves          : { self.count_nodes(only_leaves=True) }""")
-EOF
