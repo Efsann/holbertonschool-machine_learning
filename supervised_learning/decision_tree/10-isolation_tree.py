@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Isolation Random Tree modulunun reallaşdırılması
+Anomal dəyərləri tapmaq üçün İzolyasiya Ağacı moduludur
 """
 import numpy as np
 Node = __import__('8-build_decision_tree').Node
@@ -8,10 +8,10 @@ Leaf = __import__('8-build_decision_tree').Leaf
 
 
 class Isolation_Random_Tree():
-    """Anomaliyaları aşkar etmək üçün Isolation Random Tree sinfi"""
+    """Anomallıq analizi üçün təsadüfi izolyasiya ağacı sinfi"""
 
     def __init__(self, max_depth=10, seed=0, root=None):
-        """Obyektin ilkin parametrlərini başladır"""
+        """İzolyasiya ağacının ilkin parametrlərini başladır"""
         self.rng = np.random.default_rng(seed)
         if root:
             self.root = root
@@ -23,7 +23,7 @@ class Isolation_Random_Tree():
         self.min_pop = 1
 
     def __str__(self):
-        """Ağacın strukturunu sətir kimi vizuallaşdırır"""
+        """Ağac strukturunu sətir kimi qaytarır"""
         return self.root.__str__()
 
     def depth(self):
@@ -31,72 +31,73 @@ class Isolation_Random_Tree():
         return self.root.max_depth_below()
 
     def count_nodes(self, only_leaves=False):
-        """Ağacdakı düyünlərin və ya yarpaqların sayını hesablayır"""
+        """Ağacdakı düyün və ya yarpaqların sayını hesablayır"""
         return self.root.count_nodes_below(only_leaves=only_leaves)
 
     def update_bounds(self):
-        """Hər bir düyün üçün sərhədləri yeniləyir"""
+        """Bütün düyünlərin həndəsi sərhədlərini yeniləyir"""
         self.root.update_bounds_below()
 
     def get_leaves(self):
-        """Ağacdakı bütün yarpaqların siyahısını qaytarır"""
+        """Ağacın bütün son yarpaqlarını çəkir"""
         return self.root.get_leaves_below()
 
     def update_predict(self):
-        """Proqnozlaşdırma funksiyasını yeniləyir"""
-        self.root.update_predict_below()
+        """Sürətli proqnoz funksiyasını yaradır"""
+        self.update_bounds()
+        leaves = self.get_leaves()
+        for leaf in leaves:
+            leaf.update_indicator()
+        self.predict = lambda A: np.sum(
+            [leaf.indicator(A) * leaf.value for leaf in leaves], axis=0
+        )
 
     def np_extrema(self, arr):
         """Massivin minimum və maksimum dəyərlərini qaytarır"""
         return np.min(arr), np.max(arr)
 
     def random_split_criterion(self, node):
-        """Təsadüfi olaraq bir əlamət və threshold seçir"""
-        indices = np.where(node.sub_population)[0]
-        data = self.explanatory[indices]
-
-        min_vals = np.min(data, axis=0)
-        max_vals = np.max(data, axis=0)
-
-        valid_features = np.where(min_vals < max_vals)[0]
-
-        if len(valid_features) == 0:
-            return 0, 0.0
-
-        feature = self.rng.choice(valid_features)
-        threshold = self.rng.uniform(min_vals[feature], max_vals[feature])
-
+        """Təsadüfi olaraq əlamət və sərhəd həddi seçir"""
+        diff = 0
+        while diff == 0:
+            feature = self.rng.integers(0, self.explanatory.shape[1])
+            feature_min, feature_max = self.np_extrema(
+                self.explanatory[:, feature][node.sub_population]
+            )
+            diff = feature_max - feature_min
+        x = self.rng.uniform()
+        threshold = (1 - x) * feature_min + x * feature_max
         return feature, threshold
 
     def get_leaf_child(self, node, sub_population):
-        """Yarpaq övlad obyektini yaradır və nizamlayır"""
-        leaf_child = Leaf(value=node.depth + 1)
+        """Yarpaq obyekti yaradır və dəyər olaraq onun dərinliyini təyin edir"""
+        leaf_child = Leaf(node.depth + 1)
         leaf_child.depth = node.depth + 1
         leaf_child.sub_population = sub_population
         return leaf_child
 
     def get_node_child(self, node, sub_population):
-        """Daxili düyün övlad obyektini yaradır və nizamlayır"""
-        child = Node(depth=node.depth + 1)
-        child.sub_population = sub_population
-        return child
+        """Yeni bir daxili düyün obyekti yaradır"""
+        n = Node()
+        n.depth = node.depth + 1
+        n.sub_population = sub_population
+        return n
 
     def fit_node(self, node):
-        """Düyünü təsadüfi kriteriyalara əsasən bölür"""
-        if np.sum(node.sub_population) <= self.min_pop:
-            return
-
-        feature, threshold = self.random_split_criterion(node)
-        node.feature = feature
-        node.threshold = threshold
+        """Düyünləri ancaq populyasiya və dərinliyə görə bölərək ağacı qurur"""
+        node.feature, node.threshold = self.random_split_criterion(node)
 
         left_population = node.sub_population & (
-            self.explanatory[:, feature] <= threshold)
-        right_population = node.sub_population & (
-            self.explanatory[:, feature] > threshold)
+            self.explanatory[:, node.feature] > node.threshold
+        )
+        right_population = node.sub_population & ~ (
+            self.explanatory[:, node.feature] > node.threshold
+        )
 
-        is_left_leaf = (node.depth + 1 >= self.max_depth or
-                        np.sum(left_population) <= self.min_pop)
+        is_left_leaf = (
+            np.sum(left_population) < self.min_pop or
+            node.depth + 1 == self.max_depth
+        )
 
         if is_left_leaf:
             node.left_child = self.get_leaf_child(node, left_population)
@@ -104,8 +105,10 @@ class Isolation_Random_Tree():
             node.left_child = self.get_node_child(node, left_population)
             self.fit_node(node.left_child)
 
-        is_right_leaf = (node.depth + 1 >= self.max_depth or
-                         np.sum(right_population) <= self.min_pop)
+        is_right_leaf = (
+            np.sum(right_population) < self.min_pop or
+            node.depth + 1 == self.max_depth
+        )
 
         if is_right_leaf:
             node.right_child = self.get_leaf_child(node, right_population)
@@ -114,7 +117,7 @@ class Isolation_Random_Tree():
             self.fit_node(node.right_child)
 
     def fit(self, explanatory, verbose=0):
-        """Verilən məlumatlar əsasında Isolation Tree modelini öyrədir"""
+        """İzolyasiya ağacını verilən massiv üzərində öyrədir"""
         self.split_criterion = self.random_split_criterion
         self.explanatory = explanatory
         self.root.sub_population = np.ones(explanatory.shape[0], dtype='bool')
@@ -123,7 +126,8 @@ class Isolation_Random_Tree():
         self.update_predict()
 
         if verbose == 1:
-            print(f"""  Training finished.
-    - Depth                     : { self.depth()       }
-    - Number of nodes           : { self.count_nodes() }
-    - Number of leaves          : { self.count_nodes(only_leaves=True) }""")
+            print("  Training finished.")
+            print(f"    - Depth                     : {self.depth()}")
+            print(f"    - Number of nodes           : {self.count_nodes()}")
+            print(f"    - Number of leaves          : "
+                  f"{self.count_nodes(only_leaves=True)}")
