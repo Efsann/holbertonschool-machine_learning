@@ -39,18 +39,20 @@ class Node:
         """Sol övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
         new_text = "    +---> " + lines[0] + "\n"
-        for x in lines[1:]:
-            if x:
-                new_text += "    |     " + x + "\n"
+        for x in lines[1:-1]:
+            new_text += "    |     " + x + "\n"
+        if len(lines) > 1 and lines[-1]:
+            new_text += "    |     " + lines[-1]
         return new_text
 
     def right_child_add_prefix(self, text):
         """Sağ övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
         new_text = "    +---> " + lines[0] + "\n"
-        for x in lines[1:]:
-            if x:
-                new_text += "          " + x + "\n"
+        for x in lines[1:-1]:
+            new_text += "          " + x + "\n"
+        if len(lines) > 1 and lines[-1]:
+            new_text += "          " + lines[-1]
         return new_text
 
     def __str__(self):
