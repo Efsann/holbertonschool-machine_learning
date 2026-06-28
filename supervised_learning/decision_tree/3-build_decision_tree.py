@@ -21,14 +21,18 @@ class Node:
 
     def max_depth_below(self):
         """Düyündən aşağıda qalan maksimum dərinliyi hesablayır"""
-        left_depth = self.left_child.max_depth_below() if self.left_child else self.depth
-        right_depth = self.right_child.max_depth_below() if self.right_child else self.depth
+        left_depth = (self.left_child.max_depth_below()
+                      if self.left_child else self.depth)
+        right_depth = (self.right_child.max_depth_below()
+                       if self.right_child else self.depth)
         return max(left_depth, right_depth)
 
     def count_nodes_below(self, only_leaves=False):
         """Düyündən aşağıda qalan düyün və ya yarpaqların sayını hesablayır"""
-        left_count = self.left_child.count_nodes_below(only_leaves=only_leaves) if self.left_child else 0
-        right_count = self.right_child.count_nodes_below(only_leaves=only_leaves) if self.right_child else 0
+        left_count = (self.left_child.count_nodes_below(
+            only_leaves=only_leaves) if self.left_child else 0)
+        right_count = (self.right_child.count_nodes_below(
+            only_leaves=only_leaves) if self.right_child else 0)
 
         if only_leaves:
             return left_count + right_count
@@ -52,7 +56,8 @@ class Node:
 
     def get_leaves_below(self):
         """Düyündən aşağıda qalan bütün yarpaqların siyahısını qaytarır"""
-        return self.left_child.get_leaves_below() + self.right_child.get_leaves_below()
+        return (self.left_child.get_leaves_below() +
+                self.right_child.get_leaves_below())
 
     def __str__(self):
         """Düyünü sətir formatına çevirir"""
@@ -64,7 +69,8 @@ class Node:
         if self.left_child:
             out += "\n" + self.left_child_add_prefix(self.left_child.__str__())
         if self.right_child:
-            out += "\n" + self.right_child_add_prefix(self.right_child.__str__())
+            out += "\n" + self.right_child_add_prefix(
+                self.right_child.__str__())
 
         return out
 
@@ -126,4 +132,4 @@ class Decision_Tree():
 
     def __str__(self):
         """Ağacı bütövlükdə sətir kimi vizuallaşdırır"""
-        return self.root.__str__()
+        return self.root.__str__()o
