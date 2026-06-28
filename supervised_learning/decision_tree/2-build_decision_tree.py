@@ -38,40 +38,39 @@ class Node:
     def left_child_add_prefix(self, text):
         """Sol övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
-        new_text = "    +---> " + lines[0] + "\n"
+        new_text = "    +---> " + lines[0]
         for x in lines[1:]:
             if x:
-                new_text += "    |     " + x + "\n"
+                new_text += "\n    |     " + x
         return new_text
 
     def right_child_add_prefix(self, text):
         """Sağ övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
-        new_text = "    +---> " + lines[0] + "\n"
+        new_text = "    +---> " + lines[0]
         for x in lines[1:]:
             if x:
-                new_text += "          " + x + "\n"
+                new_text += "\n          " + x
         return new_text
 
     def __str__(self):
         """Düyünü sətir formatına çevirir"""
         if self.is_root:
-            out = f"root [feature={self.feature}, threshold={self.threshold}]\n"
+            out = f"root [feature={self.feature}, threshold={self.threshold}]"
         else:
-            out = f"node [feature={self.feature}, threshold={self.threshold}]\n"
-        
-        # Əgər övlad yarpaqdırsa, onun öz daxili "->" işarəsini silirik
-        # Beləcə prefiksdəki "+--->" ilə mükəmməl birləşir
+            out = f"node [feature={self.feature}, threshold={self.threshold}]"
+
         left_str = self.left_child.__str__()
+        right_str = self.right_child.__str__()
+
+        # Rekursiyada yaranan dublikat "+--->" və ya "->"-ləri təmizləyirik
         if left_str.startswith("-> "):
             left_str = left_str[3:]
-            
-        right_str = self.right_child.__str__()
         if right_str.startswith("-> "):
             right_str = right_str[3:]
-            
-        out += self.left_child_add_prefix(left_str)
-        out += self.right_child_add_prefix(right_str)
+
+        out += "\n" + self.left_child_add_prefix(left_str)
+        out += "\n" + self.right_child_add_prefix(right_str)
         return out
 
 
@@ -94,7 +93,7 @@ class Leaf(Node):
 
     def __str__(self):
         """Yarpağı sətir formatına çevirir"""
-        return f"-> leaf [value={self.value}]"
+        return f"leaf [value={self.value}]"
 
 
 class Decision_Tree():
@@ -124,4 +123,4 @@ class Decision_Tree():
 
     def __str__(self):
         """Ağacı bütövlükdə sətir kimi vizuallaşdırır"""
-        return self.root.__str__().rstrip("\n")
+        return self.root.__str__()
