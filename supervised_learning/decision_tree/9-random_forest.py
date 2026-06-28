@@ -28,7 +28,7 @@ class Random_Forest():
         tree_predictions = np.array([pred(explanatory)
                                      for pred in self.numpy_preds])
 
-        # Hər bir fərd üçün ən çox təkrarlanan (mode) sinfi hesablayırıq
+        # Hər bir fərd üçün ən Xcode təkrarlanan (mode) sinfi hesablayırıq
         num_individuals = explanatory.shape[0]
         modes = np.array([np.bincount(tree_predictions[:, i]).argmax()
                           for i in range(num_individuals)])
@@ -46,7 +46,8 @@ class Random_Forest():
         accuracies = []
         for i in range(n_trees):
             T = Decision_Tree(max_depth=self.max_depth,
-                              min_pop=self.min_pop, seed=self.seed+i)
+                              min_pop=self.min_pop,
+                              seed=self.seed + i)
             T.fit(explanatory, target)
             self.numpy_preds.append(T.predict)
             depths.append(T.depth())
