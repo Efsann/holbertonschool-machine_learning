@@ -38,18 +38,20 @@ class Node:
     def left_child_add_prefix(self, text):
         """Sol övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
-        new_text = "    +--" + lines[0] + "\n"
+        new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
-            new_text += ("    |  " + x) + "\n"
-        return (new_text)
+            if x:
+                new_text += "    |     " + x + "\n"
+        return new_text
 
     def right_child_add_prefix(self, text):
         """Sağ övladın budaqları üçün prefiks əlavə edir"""
         lines = text.split("\n")
-        new_text = "    +--" + lines[0] + "\n"
+        new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
-            new_text += ("       " + x) + "\n"
-        return (new_text)
+            if x:
+                new_text += "          " + x + "\n"
+        return new_text
 
     def __str__(self):
         """Düyünü sətir formatına çevirir"""
@@ -57,8 +59,19 @@ class Node:
             out = f"root [feature={self.feature}, threshold={self.threshold}]\n"
         else:
             out = f"node [feature={self.feature}, threshold={self.threshold}]\n"
-        out += self.left_child_add_prefix(self.left_child.__str__())
-        out += self.right_child_add_prefix(self.right_child.__str__())
+        
+        # Əgər övlad yarpaqdırsa, onun öz daxili "->" işarəsini silirik
+        # Beləcə prefiksdəki "+--->" ilə mükəmməl birləşir
+        left_str = self.left_child.__str__()
+        if left_str.startswith("-> "):
+            left_str = left_str[3:]
+            
+        right_str = self.right_child.__str__()
+        if right_str.startswith("-> "):
+            right_str = right_str[3:]
+            
+        out += self.left_child_add_prefix(left_str)
+        out += self.right_child_add_prefix(right_str)
         return out
 
 
@@ -81,7 +94,7 @@ class Leaf(Node):
 
     def __str__(self):
         """Yarpağı sətir formatına çevirir"""
-        return (f"-> leaf [value={self.value}]")
+        return f"-> leaf [value={self.value}]"
 
 
 class Decision_Tree():
@@ -111,4 +124,4 @@ class Decision_Tree():
 
     def __str__(self):
         """Ağacı bütövlükdə sətir kimi vizuallaşdırır"""
-        return self.root.__str__()
+        return self.root.__str__().rstrip("\n")
