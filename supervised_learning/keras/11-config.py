@@ -2,7 +2,7 @@
 """
 Module containing functions to save and load Keras model configurations
 """
-import tensorflow as tf
+import tensorflow.keras as K
 
 
 def save_config(network, filename):
@@ -34,4 +34,4 @@ def load_config(filename):
     """
     with open(filename, 'r') as f:
         json_config = f.read()
-    return tf.keras.models.model_from_json(json_config)
+    return K.models.model_from_json(json_config)
