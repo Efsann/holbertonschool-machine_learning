@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-Module to save and load Keras models
+Module containing functions to save and load Keras models
 """
-import tensorflow.keras as K
+import tensorflow as tf
 
 
 def save_model(network, filename):
     """
     Saves an entire Keras model to a file.
 
-    Args:
-        network: The Keras model to be saved.
-        filename: The path of the file where the model should be saved.
+    Parameters:
+    network: The model to save.
+    filename: The path of the file that the model should be saved to.
 
     Returns:
-        None
+    None
     """
     network.save(filename)
 
@@ -23,10 +23,10 @@ def load_model(filename):
     """
     Loads an entire Keras model from a file.
 
-    Args:
-        filename: The path of the file from which the model should be loaded.
+    Parameters:
+    filename: The path of the file that the model should be loaded from.
 
     Returns:
-        The loaded Keras model.
+    The loaded Keras model.
     """
-    return K.models.load_model(filename)
+    return tf.keras.models.load_model(filename)
