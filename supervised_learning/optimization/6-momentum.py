@@ -1,4 +1,3 @@
-  GNU nano 6.2                                                                                                    6-momentum.py *                                                                                                           
 #!/usr/bin/env python3
 """
 Module to set up Momentum optimization in TensorFlow
@@ -17,4 +16,4 @@ def create_momentum_op(alpha, beta1):
     Returns:
     The optimizer
     """
-
+    return tf.keras.optimizers.SGD(learning_rate=alpha, momentum=beta1)
