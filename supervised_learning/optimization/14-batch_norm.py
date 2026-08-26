@@ -18,18 +18,20 @@ def create_batch_norm_layer(prev, n, activation):
     A tensor of the activated output for the layer
     """
     init = tf.keras.initializers.VarianceScaling(mode='fan_avg')
-    dense = tf.keras.layers.Dense(
+    dense_layer = tf.keras.layers.Dense(
         units=n,
         kernel_initializer=init,
         use_bias=False
-    )(prev)
+    )
+    Z = dense_layer(prev)
 
-    batch_norm = tf.keras.layers.BatchNormalization(
+    batch_norm_layer = tf.keras.layers.BatchNormalization(
         gamma_initializer='ones',
         beta_initializer='zeros',
         epsilon=1e-7
-    )(dense)
+    )
+    Z_norm = batch_norm_layer(Z, training=True)
 
     if activation is None:
-        return batch_norm
-    return activation(batch_norm)
+        return Z_norm
+    return activation(Z_norm)
