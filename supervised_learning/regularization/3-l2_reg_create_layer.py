@@ -7,7 +7,7 @@ import tensorflow as tf
 
 def l2_reg_create_layer(prev, n, activation, lambtha):
     """
-    Creates a neural network layer in TensorFlow that includes L2 regularization.
+    Creates a layer in TensorFlow that includes L2 regularization.
 
     Parameters:
     prev: tensor containing the output of the previous layer
