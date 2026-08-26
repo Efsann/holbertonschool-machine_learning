@@ -28,4 +28,3 @@ def create_mini_batches(X, Y, batch_size):
         mini_batches.append((X_batch, Y_batch))
 
     return mini_batches
-
