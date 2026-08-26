@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module to update weights and biases using Gradient Descent with L2 regularization
+Module to update weights and biases using GD with L2 regularization
 """
 import numpy as np
 
