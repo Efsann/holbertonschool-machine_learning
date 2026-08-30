@@ -19,10 +19,10 @@ class LSTMCell:
             o (int): dimensionality of the outputs
         """
         # Weights initialized using a random normal distribution
-        self.Wf = np.random.randn(i + h, h)
-        self.Wu = np.random.randn(i + h, h)
-        self.Wc = np.random.randn(i + h, h)
-        self.Wo = np.random.randn(i + h, h)
+        self.Wf = np.random.randn(h + i, h)
+        self.Wu = np.random.randn(h + i, h)
+        self.Wc = np.random.randn(h + i, h)
+        self.Wo = np.random.randn(h + i, h)
         self.Wy = np.random.randn(h, o)
 
         # Biases initialized as zeros
@@ -46,7 +46,8 @@ class LSTMCell:
             c_next (np.ndarray): next cell state
             y (np.ndarray): output of the cell
         """
-        concat_input = np.concatenate((x_t, h_prev), axis=1)
+        # Concatenate prev hidden state first, then input
+        concat_input = np.concatenate((h_prev, x_t), axis=1)
 
         # Forget Gate
         f_t = 1 / (1 + np.exp(-(np.matmul(concat_input, self.Wf) + self.bf)))
