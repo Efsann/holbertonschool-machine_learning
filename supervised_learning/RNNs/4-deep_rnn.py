@@ -50,7 +50,7 @@ def deep_rnn(rnn_cells, X, h_0):
             # Store the updated hidden state for the next time step
             H[step + 1, layer] = h_next
 
-            # The input for the next layer is the hidden state of the current layer
+            # Input for next layer is current layer's hidden state
             x_t = h_next
 
         # The output of the deep RNN at this step comes from the last layer
