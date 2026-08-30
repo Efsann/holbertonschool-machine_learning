@@ -40,11 +40,10 @@ class NST:
         if not isinstance(beta, (int, float)) or isinstance(beta, bool) or beta < 0:
             raise TypeError("beta must be a non-negative number")
 
-        tf.enable_eager_execution()
         self.style_image = self.scale_image(style_image)
         self.content_image = self.scale_image(content_image)
-        self.alpha = alpha
-        self.beta = beta
+        self.alpha = float(alpha)
+        self.beta = float(beta)
 
     @staticmethod
     def scale_image(image):
@@ -73,10 +72,17 @@ class NST:
 
         image_expanded = tf.expand_dims(image, axis=0)
 
-        resized_image = tf.image.resize_bicubic(
-            image_expanded,
-            size=[h_new, w_new]
-        )
+        try:
+            resized_image = tf.image.resize_bicubic(
+                image_expanded,
+                size=[h_new, w_new]
+            )
+        except AttributeError:
+            resized_image = tf.image.resize(
+                image_expanded,
+                size=[h_new, w_new],
+                method=tf.image.ResizeMethod.BICUBIC
+            )
 
         scaled_image = tf.clip_by_value(resized_image / 255.0, 0.0, 1.0)
 
