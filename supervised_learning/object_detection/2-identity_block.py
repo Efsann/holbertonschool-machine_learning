@@ -18,7 +18,7 @@ def identity_block(A_prev, filters):
     - The activated output of the identity block
     """
     F11, F3, F12 = filters
-    initializer = K.initializers.HeNormal(seed=0)
+    initializer = K.initializers.he_normal(seed=0)
 
     # First component of main path (1x1 conv)
     X = K.layers.Conv2D(
