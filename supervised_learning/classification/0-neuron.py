@@ -17,7 +17,7 @@ class Neuron:
         Parameters:
         - nx: int, number of input features to the neuron
         """
-        if not isinstance(nx, int):
+        if type(nx) is not int:
             raise TypeError("nx must be an integer")
         if nx < 1:
             raise ValueError("nx must be a positive integer")
