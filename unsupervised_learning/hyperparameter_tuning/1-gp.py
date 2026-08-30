@@ -38,11 +38,8 @@ class GaussianProcess:
         Returns:
         - Covariance kernel matrix as numpy.ndarray of shape (m, n)
         """
-        sqdist = (
-            np.sum(X1**2, 1).reshape(-1, 1)
-            + np.sum(X2**2, 1)
-            - 2 * np.dot(X1, X2.T)
-        )
+        sqdist = np.sum(X1 ** 2, 1).reshape(-1, 1) + np.sum(X2 ** 2, 1)
+        sqdist = sqdist - 2 * np.dot(X1, X2.T)
         return (self.sigma_f ** 2) * np.exp(-0.5 / (self.l ** 2) * sqdist)
 
     def predict(self, X_s):
@@ -50,7 +47,7 @@ class GaussianProcess:
         Predicts the mean and standard deviation of points in a GP
 
         Parameters:
-        - X_s: numpy.ndarray of shape (s, 1) containing all sample points
+        - X_s: numpy.ndarray of shape (s, 1) containing sample points
 
         Returns:
         - mu: numpy.ndarray of shape (s,) containing the mean for each point
