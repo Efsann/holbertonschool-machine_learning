@@ -34,12 +34,13 @@ class NST:
             raise TypeError("content_image must be a numpy.ndarray "
                             "with shape (h, w, 3)")
 
-        if not isinstance(alpha, (int, float)) or alpha < 0:
+        if not isinstance(alpha, (int, float)) or isinstance(alpha, bool) or alpha < 0:
             raise TypeError("alpha must be a non-negative number")
 
-        if not isinstance(beta, (int, float)) or beta < 0:
+        if not isinstance(beta, (int, float)) or isinstance(beta, bool) or beta < 0:
             raise TypeError("beta must be a non-negative number")
 
+        tf.enable_eager_execution()
         self.style_image = self.scale_image(style_image)
         self.content_image = self.scale_image(content_image)
         self.alpha = alpha
@@ -70,17 +71,13 @@ class NST:
             w_new = 512
             h_new = int(h * (512 / w))
 
-        # Add batch dimension: (1, h, w, 3)
         image_expanded = tf.expand_dims(image, axis=0)
 
-        # Resize using bicubic interpolation
-        resized_image = tf.image.resize(
+        resized_image = tf.image.resize_bicubic(
             image_expanded,
-            size=[h_new, w_new],
-            method=tf.image.ResizeMethod.BICUBIC
+            size=[h_new, w_new]
         )
 
-        # Rescale pixel values to range [0, 1] and clip
         scaled_image = tf.clip_by_value(resized_image / 255.0, 0.0, 1.0)
 
         return scaled_image
