@@ -12,11 +12,7 @@ def rnn(rnn_cell, X, h_0):
     Parameters:
         rnn_cell (RNNCell): instance of RNNCell used for forward propagation
         X (np.ndarray): input data of shape (t, m, i)
-            t: maximum number of time steps
-            m: batch size
-            i: dimensionality of the data
         h_0 (np.ndarray): initial hidden state of shape (m, h)
-            h: dimensionality of the hidden state
 
     Returns:
         H (np.ndarray): contains all hidden states, shape (t + 1, m, h)
@@ -25,18 +21,12 @@ def rnn(rnn_cell, X, h_0):
     t, m, i = X.shape
     h = h_0.shape[1]
 
-    # Initialize H to store initial hidden state and all subsequent states
     H = np.zeros((t + 1, m, h))
     H[0] = h_0
 
-    # Determine output dimensionality o by doing a temporary forward pass
-    # or referencing the cell's Wy weight shape
     o = rnn_cell.Wy.shape[1]
-
-    # Initialize Y to store outputs for all time steps
     Y = np.zeros((t, m, o))
 
-    # Perform forward propagation through all time steps
     h_prev = h_0
     for step in range(t):
         x_t = X[step]
