@@ -1,1 +1,1 @@
-# RNNs Project
+# Recurrent Neural Networks
