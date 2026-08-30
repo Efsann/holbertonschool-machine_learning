@@ -7,7 +7,7 @@ import numpy as np
 
 class GRUCell:
     """
-    Represents a gated recurrent unit (GRU) cell
+    Represents a gated recurrent unit (GRU)
     """
     def __init__(self, i, h, o):
         """
@@ -18,11 +18,13 @@ class GRUCell:
             h (int): dimensionality of the hidden state
             o (int): dimensionality of the outputs
         """
-        self.Wz = np.random.randn(i + h, h)
-        self.Wr = np.random.randn(i + h, h)
-        self.Wh = np.random.randn(i + h, h)
+        # Weights initialized using a random normal distribution
+        self.Wz = np.random.randn(h + i, h)
+        self.Wr = np.random.randn(h + i, h)
+        self.Wh = np.random.randn(h + i, h)
         self.Wy = np.random.randn(h, o)
 
+        # Biases initialized as zeros
         self.bz = np.zeros((1, h))
         self.br = np.zeros((1, h))
         self.bh = np.zeros((1, h))
@@ -40,22 +42,25 @@ class GRUCell:
             h_next (np.ndarray): next hidden state
             y (np.ndarray): output of the cell
         """
-        concat_input = np.concatenate((x_t, h_prev), axis=1)
+        # Concatenate prev hidden state first, then input
+        concat_input = np.concatenate((h_prev, x_t), axis=1)
 
-        # Update gate: z_t = sigmoid(concat_input @ Wz + bz)
+        # Update Gate
         z_t = 1 / (1 + np.exp(-(np.matmul(concat_input, self.Wz) + self.bz)))
 
-        # Reset gate: r_t = sigmoid(concat_input @ Wr + br)
+        # Reset Gate
         r_t = 1 / (1 + np.exp(-(np.matmul(concat_input, self.Wr) + self.br)))
 
-        # Candidate/intermediate hidden state
-        concat_reset = np.concatenate((x_t, r_t * h_prev), axis=1)
+        # Concatenate reset-gated hidden state with input
+        concat_reset = np.concatenate((r_t * h_prev, x_t), axis=1)
+
+        # Candidate Hidden State
         h_tilde = np.tanh(np.matmul(concat_reset, self.Wh) + self.bh)
 
-        # Next hidden state: h_next = (1 - z_t) * h_prev + z_t * h_tilde
+        # Next Hidden State
         h_next = (1 - z_t) * h_prev + z_t * h_tilde
 
-        # Output with softmax activation
+        # Output y with softmax activation
         y_logits = np.matmul(h_next, self.Wy) + self.by
         exp_logits = np.exp(y_logits - np.max(y_logits, axis=1, keepdims=True))
         y = exp_logits / np.sum(exp_logits, axis=1, keepdims=True)
