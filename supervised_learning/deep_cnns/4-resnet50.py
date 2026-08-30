@@ -59,7 +59,7 @@ def resnet50():
     X = identity_block(X, [512, 512, 2048])
     X = identity_block(X, [512, 512, 2048])
 
-    # Average Pooling + Dense Output (Softmax activation: standard 1000 classes)
+    # Average Pooling + Dense Output
     X = K.layers.AveragePooling2D(
         pool_size=(7, 7),
         strides=(1, 1),
