@@ -50,7 +50,7 @@ def expectation(X, pi, m, S):
         g[j] = pi[j] * P
 
     marginal = np.sum(g, axis=0)
-    l = np.sum(np.log(marginal))
+    log_like = np.sum(np.log(marginal))
     g /= marginal
 
-    return g, l
+    return g, log_like
