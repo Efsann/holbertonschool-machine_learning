@@ -38,31 +38,29 @@ def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
     if pi is None or m is None or S is None:
         return None, None, None, None, None
 
-    l_prev = 0
-    i = 0
+    g, l = expectation(X, pi, m, S)  # noqa: E741
+    if g is None or l is None:
+        return None, None, None, None, None
 
-    for i in range(iterations):
-        g, l = expectation(X, pi, m, S)  # noqa: E741
-        if g is None or l is None:
-            return None, None, None, None, None
+    if verbose:
+        print("Log Likelihood after 0 iterations: {:.5f}".format(l))
 
-        if verbose and (i % 10 == 0):
-            print("Log Likelihood after {} iterations: {:.5f}".format(i, l))
-
-        if i > 0 and abs(l - l_prev) <= tol:
-            break
+    for i in range(1, iterations + 1):
+        l_prev = l
 
         pi, m, S = maximization(X, g)
         if pi is None or m is None or S is None:
             return None, None, None, None, None
 
-        l_prev = l
-    else:
         g, l = expectation(X, pi, m, S)  # noqa: E741
         if g is None or l is None:
             return None, None, None, None, None
 
-    if verbose and (i % 10 != 0 or i == iterations - 1):
-        print("Log Likelihood after {} iterations: {:.5f}".format(i, l))
+        if verbose and (i % 10 == 0 or abs(l - l_prev) <= tol
+                        or i == iterations):
+            print("Log Likelihood after {} iterations: {:.5f}".format(i, l))
+
+        if abs(l - l_prev) <= tol:
+            break
 
     return pi, m, S, g, l
