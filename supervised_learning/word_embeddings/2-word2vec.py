@@ -24,18 +24,23 @@ def word2vec_model(sentences, vector_size=100, min_count=5, window=5,
     returns:
         the trained gensim word2vec model
     """
-    
-    # Gensim 3.x versiyasında 'vector_size' -> 'size', 'epochs' -> 'iter' olaraq keçir
+    # Deterministik hashing funksiyasını bərpa edirik ki, 
+    # fərqli run-larda eyni rəqəmlər alınsın
+    def hash_func(text):
+        return hash(text)
+
+    # Gensim 4.x standartlarına uyğun parametr adları
     model = gensim.models.Word2Vec(
         sentences=sentences,
-        size=vector_size,     
+        vector_size=vector_size,
         min_count=min_count,
         window=window,
         negative=negative,
         sg=0 if cbow else 1,
         seed=seed,
         workers=workers,
-        iter=epochs           
+        epochs=epochs,
+        hashfn=hash_func
     )
 
     return model
