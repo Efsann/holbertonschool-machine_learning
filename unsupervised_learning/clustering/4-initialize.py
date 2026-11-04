@@ -17,9 +17,9 @@ def initialize(X, k):
 
     returns:
         pi, m, S, or None, None, None on failure
-            pi: numpy.ndarray of shape (k,) containing priors initialized evenly
-            m: numpy.ndarray of shape (k, d) containing centroid means from K-means
-            S: numpy.ndarray of shape (k, d, d) containing covariance matrices as identity
+            pi: numpy.ndarray of shape (k,) containing cluster priors
+            m: numpy.ndarray of shape (k, d) containing centroid means
+            S: numpy.ndarray of shape (k, d, d) containing covariances
     """
     if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None, None
