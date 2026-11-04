@@ -14,14 +14,14 @@ def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
     Performs the expectation maximization for a GMM
 
     parameters:
-        X: numpy.ndarray of shape (n, d) containing the data set
+        X: numpy.ndarray of shape (n, d) containing the dataset
         k: positive integer containing the number of clusters
         iterations: maximum number of iterations for the algorithm
         tol: tolerance of the log likelihood for early stopping
         verbose: boolean determining if info should be printed
 
     returns:
-        pi, m, S, g, log_like, or None, None, None, None, None on failure
+        pi, m, S, g, log_like, or None, None, None, None, None
     """
     if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None, None, None, None
@@ -43,7 +43,8 @@ def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
         return None, None, None, None, None
 
     if verbose:
-        print("Log Likelihood after 0 iterations: {:.5f}".format(log_like))
+        print("Log Likelihood after 0 iterations: {}".format(
+            round(log_like, 5)))
 
     for i in range(1, iterations + 1):
         l_prev = log_like
@@ -58,8 +59,8 @@ def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
 
         if verbose and (i % 10 == 0 or abs(log_like - l_prev) <= tol
                         or i == iterations):
-            print("Log Likelihood after {} iterations: {:.5f}".format(
-                i, log_like))
+            print("Log Likelihood after {} iterations: {}".format(
+                i, round(log_like, 5)))
 
         if abs(log_like - l_prev) <= tol:
             break
