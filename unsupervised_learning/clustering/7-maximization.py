@@ -46,4 +46,3 @@ def maximization(X, g):
         S[j] = np.matmul(g[j] * X_m.T, X_m) / N_k[j]
 
     return pi, m, S
-
