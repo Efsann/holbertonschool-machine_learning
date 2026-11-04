@@ -2,7 +2,7 @@
 """
 Word2Vec training module
 """
-from gensim.models import Word2Vec
+import gensim
 
 
 def word2vec_model(sentences, vector_size=100, min_count=5, window=5,
@@ -24,20 +24,17 @@ def word2vec_model(sentences, vector_size=100, min_count=5, window=5,
     returns:
         the trained gensim word2vec model
     """
-    model = Word2Vec(
+    sg = 0 if cbow else 1
+
+    model = gensim.models.Word2Vec(
+        sentences=sentences,
         vector_size=vector_size,
         min_count=min_count,
         window=window,
         negative=negative,
-        sg=0 if cbow else 1,
+        sg=sg,
         seed=seed,
-        workers=workers
-    )
-
-    model.build_vocab(sentences)
-    model.train(
-        sentences,
-        total_examples=model.corpus_count,
+        workers=workers,
         epochs=epochs
     )
 
