@@ -18,14 +18,14 @@ def bag_of_words(sentences, vocab=None):
         embeddings: numpy.ndarray of shape (s, f) containing the embeddings
         features: list of features used for embeddings
     """
-    # 1. Bütün cümlələri kiçik hərflərə çevirib punktuasiyaları təmizləyirik
     cleaned_sentences = []
     for sentence in sentences:
-        # Durğu işarələrini silirik ('s daxil olmaqla bütün işarələri boşluqla əvəz edirik)
+        # Durğu işarələrini silirik ('s hissəsindəki apostrofu da silir)
         cleaned = re.sub(r'[^\w\s]', '', sentence.lower())
-        cleaned_sentences.append(cleaned.split())
+        # 's sözün sonundadırsa silirik (children's -> children)
+        words = [re.sub(r"'s$", '', word) for word in cleaned.split()]
+        cleaned_sentences.append(words)
 
-    # 2. Əgər vocab verilməyibsə, cümlələrdən unikal sözləri çıxarıb çeşidləyirik
     if vocab is None:
         words_set = set()
         for sentence_words in cleaned_sentences:
@@ -34,12 +34,10 @@ def bag_of_words(sentences, vocab=None):
     else:
         features = vocab
 
-    # 3. Matrix ölçülərini təyin edirik (s: cümlə sayı, f: söz sayı)
     s = len(sentences)
     f = len(features)
     embeddings = np.zeros((s, f), dtype=int)
 
-    # 4. Hər cümlədəki sözlərin sayını hesablayıb matrisə doldururuq
     for i, sentence_words in enumerate(cleaned_sentences):
         for word in sentence_words:
             if word in features:
