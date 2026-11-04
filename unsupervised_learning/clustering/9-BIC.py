@@ -12,7 +12,7 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
     Finds the best number of clusters for a GMM using BIC
 
     parameters:
-        X: numpy.ndarray of shape (n, d) containing the data set
+        X: numpy.ndarray of shape (n, d) containing the dataset
         kmin: minimum number of clusters to check for (inclusive)
         kmax: maximum number of clusters to check for (inclusive)
         iterations: maximum number of iterations for EM
@@ -20,7 +20,7 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
         verbose: boolean determining if EM prints information
 
     returns:
-        best_k, best_result, log_likes, bics, or None, None, None, None on failure
+        best_k, best_result, log_likes, bics, or None, None, None, None
     """
     if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None, None, None
