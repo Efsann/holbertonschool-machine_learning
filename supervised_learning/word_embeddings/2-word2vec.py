@@ -24,29 +24,18 @@ def word2vec_model(sentences, vector_size=100, min_count=5, window=5,
     returns:
         the trained gensim word2vec model
     """
-    sg = 0 if cbow else 1
-
-    def deterministic_hash(text):
-        """Custom deterministic hash for gensim"""
-        # Sadə, lakin deterministik bir hash implementasiyası
-        if type(text) is not str:
-            text = str(text)
-        h = 0
-        for c in text:
-            h = (h * 31 + ord(c)) & 0xFFFFFFFF
-        return h
-
+    
+    # Gensim 3.x versiyasında 'vector_size' -> 'size', 'epochs' -> 'iter' olaraq keçir
     model = gensim.models.Word2Vec(
         sentences=sentences,
-        vector_size=vector_size,
+        size=vector_size,     
         min_count=min_count,
         window=window,
         negative=negative,
-        sg=sg,
+        sg=0 if cbow else 1,
         seed=seed,
         workers=workers,
-        epochs=epochs,
-        hashfn=deterministic_hash
+        iter=epochs           
     )
 
     return model
