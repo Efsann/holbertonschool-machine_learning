@@ -26,6 +26,11 @@ def word2vec_model(sentences, vector_size=100, min_count=5, window=5,
     """
     sg = 0 if cbow else 1
 
+    # Deterministik hashing funksiyası
+    def hash_func(text):
+        return hash(text)
+
+    # Word2Vec obyektini yaradırıq, hashfn parametrini əlavə edirik
     model = gensim.models.Word2Vec(
         sentences=sentences,
         vector_size=vector_size,
@@ -35,7 +40,8 @@ def word2vec_model(sentences, vector_size=100, min_count=5, window=5,
         sg=sg,
         seed=seed,
         workers=workers,
-        epochs=epochs
+        epochs=epochs,
+        hashfn=hash_func
     )
 
     return model
